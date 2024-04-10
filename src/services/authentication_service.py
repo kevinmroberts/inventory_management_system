@@ -1,4 +1,4 @@
-from src.gui.main_app import MainApp
+from src.gui.app import App
 from src.repositories.user_repository import create_user, validate_user
 from tkinter import messagebox
 
@@ -25,7 +25,7 @@ def login(root, username_entry, password_entry):
         # Close the login window
         root.destroy()
         # Run main app
-        main_app_instance = MainApp()
+        main_app_instance = App()
         main_app_instance.run()
     else:
         messagebox.showerror("Login Failed", "Invalid username or password.")

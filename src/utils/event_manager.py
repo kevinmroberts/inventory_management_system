@@ -1,5 +1,7 @@
 # Define event type constants
+# Product constants
 PRODUCT_ADDED = 'product_added'
+PRODUCT_DELETED = 'product_deleted'
 
 class EventManager:
     def __init__(self):

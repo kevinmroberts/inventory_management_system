@@ -1,21 +1,22 @@
-# main_app.py
+# app.py
 
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from src.gui.add_product import add_product_popup
 from src.utils.utils import center_window
 from src.utils.singleton import Singleton
 from src.utils.event_manager import EventManager, PRODUCT_ADDED
 from src.services.product_service import ProductService
 
-class MainApp(Singleton):
+class App(Singleton):
     def __init__(self):
-        # Ensure only one instance of MainApp is created
+        # Ensure only one instance of App is created
         super().__init__()
         
         self.root = tk.Tk()
         self.root.title("Inventory Management System")
         self.event_manager = EventManager()
+        self.product_service = ProductService(self.event_manager)
         self.setup_gui()
 
         # Subscribe to the product_added event
@@ -65,7 +66,7 @@ class MainApp(Singleton):
         add_product_button = ttk.Button(right_frame, text="Add Product", command=lambda: add_product_popup(self.root, self.event_manager))
         add_product_button.pack(pady=10)
 
-        remove_product_button = ttk.Button(right_frame, text="Remove Product")
+        remove_product_button = ttk.Button(right_frame, text="Remove Product", command=self.on_delete_product_button_click)
         remove_product_button.pack(pady=10)
 
         manage_categories_button = ttk.Button(right_frame, text="Manage Categories")
@@ -83,8 +84,28 @@ class MainApp(Singleton):
             self.treeview.delete(item)
             
         # Fetch new product data and populate the treeview
-        for product in ProductService.fetch_products():
+        for product in self.product_service.fetch_products():
             self.treeview.insert('', 'end', values=product)
+
+    def on_delete_product_button_click(self):
+        selected_product_id = self.get_selected_product_id()  # Implement this based on your UI
+        if selected_product_id:
+            confirm = messagebox.askyesno("Confirm Delete", "Are you sure you want to delete this product?")
+            if confirm:
+                self.product_service.delete_product(selected_product_id)
+                messagebox.showinfo("Success", "Product deleted successfully.")
+                self.load_products() # Refresh the product list
+
+    def get_selected_product_id(self):
+        selected_items = self.treeview.selection()  # Get the selected item(s)
+        if selected_items:  # If there's at least one selected item
+            selected_item = selected_items[0]  # Assuming single selection
+            item = self.treeview.item(selected_item)
+            product_id = item['values'][0]  # Assuming the ID is in the first column
+            return product_id
+        else:
+            messagebox.showwarning("Selection Error", "Please select a product first.")
+            return None
 
     def run(self):
         # Run the main event loop
