@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk, messagebox
 from src.utils.utils import center_window
 from src.services.authentication_service import register_user
 
@@ -16,14 +17,10 @@ def show_registration_popup(root):
     popup_height = 250
     center_window(popup, popup_width, popup_height)
 
-    style = tk.Style()
-    style.configure('TButton', font=('Segoe UI', 10), borderwidth='4')
-    style.map('TButton', foreground=[('active', '!disabled', 'green')], background=[('active', 'black')])
-
     # Applying consistent styling
     popup.configure(bg='white')  # Set background color
 
-    style = tk.Style()
+    style = ttk.Style()
     style.configure('TButton', font=('Segoe UI', 10), borderwidth='4')
     style.map('TButton', foreground=[('active', '!disabled', 'green')], background=[('active', 'black')])
 
@@ -49,11 +46,11 @@ def show_registration_popup(root):
     confirm_password_entry.grid(row=3, column=1, padx=10, pady=10, sticky='ew')
 
     # Adjust the button styling and placement
-    register_button = tk.Button(popup, text="Register", style='TButton', command=lambda: register_user(username_entry, email_entry, password_entry, confirm_password_entry, popup, root))
+    register_button = ttk.Button(popup, text="Register", style='TButton', command=lambda: attempt_register())
     register_button.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
 
     # Add a "Back to Login" button
-    back_to_login_button = tk.Button(popup, text="Back to Login", style='TButton', command=lambda: back_to_login(popup, root))
+    back_to_login_button = ttk.Button(popup, text="Back to Login", style='TButton', command=lambda: back_to_login(popup, root))
     back_to_login_button.grid(row=5, column=0, columnspan=2, padx=10, pady=5)
 
     # Ensure the entry fields and button stretch to fill the dialog width
@@ -61,6 +58,21 @@ def show_registration_popup(root):
 
     # Handle the close event
     def on_popup_close():
-        root.destroy()
+        back_to_login(popup, root)
+    
+    # Handle registering user
+    def attempt_register():
+        # Extract user input
+        username = username_entry.get()
+        email = email_entry.get()
+        password = password_entry.get()
+        confirm_password = confirm_password_entry.get()
+
+        # Attempt to register the user
+        registration_successful = register_user(username, email, password, confirm_password)
+
+        # Check if registration was successful
+        if registration_successful:
+            back_to_login(popup, root)
 
     popup.protocol("WM_DELETE_WINDOW", on_popup_close)

@@ -24,7 +24,7 @@ def main():
     # Password
     password_label = ttk.Label(root, text="Password:", font=('Segoe UI', 10))
     password_label.pack()
-    password_entry = ttk.Entry(root, show="*", font=('Segoe UI', 10))
+    password_entry = tk.Entry(root, show="*", font=('Segoe UI', 10))
     password_entry.pack(pady=(0, 20))
 
     # Login Button

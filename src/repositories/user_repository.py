@@ -14,12 +14,14 @@ def create_user(username, email, password):
 
     if existing_user:
         messagebox.showerror("Registration Failed", "Username already exists. Please choose a different username.")
+        return False
     else:
         # Insert the new user into the database
         cursor.execute("INSERT INTO User (username, email, password_hash) VALUES (?, ?, ?)",
                        (username, email, hashlib.sha256(password.encode()).hexdigest()))
         conn.commit()
         messagebox.showinfo("Registration Successful", "User registered successfully.")
+        return True
     
     # Close db connection
     conn.close()
