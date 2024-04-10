@@ -1,6 +1,6 @@
 import os
 import sys
-from src.gui_components.gui_login import main as run_gui_login
+from src.gui.login import main as run_gui_login
 
 def setup_environment():
     # Add the parent directory of 'src/' to the Python module search path

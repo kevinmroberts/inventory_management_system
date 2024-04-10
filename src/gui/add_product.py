@@ -1,10 +1,8 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
-from src.services.product_service import create_product
-from src.services.database_service import connect_to_database
+from tkinter import messagebox, ttk
 from src.utils.utils import center_window
 from src.utils.event_manager import PRODUCT_ADDED
+from src.services.product_service import ProductService
 
 def add_product_popup(root, event_manager):
     popup = tk.Toplevel(root)
@@ -34,17 +32,24 @@ def add_product_popup(root, event_manager):
     quantity_entry = tk.Entry(popup)
     quantity_entry.grid(row=3, column=1, padx=5, pady=5)
 
-    # Function to add product to the database
+    # Instantiate ProductService with event_manager
+    product_service = ProductService(event_manager)
+
     def add_product():
         # Get product details from the entry fields
         name = name_entry.get()
         description = description_entry.get()
-        price = float(price_entry.get())
-        quantity = int(quantity_entry.get())
-        create_product(name, description, price, quantity)
+        try:
+            price = float(price_entry.get())
+            quantity = int(quantity_entry.get())
+        except ValueError:
+            messagebox.showerror("Input Error", "Please ensure price and quantity are valid numbers.")
+            return
+
+        # Use the instance to add a product
+        product_service.add_product(name, description, price, quantity)
         messagebox.showinfo("Success", "Product added successfully.")
-        event_manager.publish(PRODUCT_ADDED) # Publish the product_added event
-        popup.destroy() # Close the popup
+        popup.destroy()  # Close the popup
 
     # Create the "Add Product" button
     add_product_button = tk.Button(popup, text="Add Product", command=add_product)

@@ -2,11 +2,11 @@
 
 import tkinter as tk
 from tkinter import ttk
-from src.gui_components.add_product import add_product_popup
+from src.gui.add_product import add_product_popup
 from src.utils.utils import center_window
 from src.utils.singleton import Singleton
 from src.utils.event_manager import EventManager, PRODUCT_ADDED
-from src.services.product_service import fetch_products
+from src.services.product_service import ProductService
 
 class MainApp(Singleton):
     def __init__(self):
@@ -83,7 +83,7 @@ class MainApp(Singleton):
             self.treeview.delete(item)
             
         # Fetch new product data and populate the treeview
-        for product in fetch_products():
+        for product in ProductService.fetch_products():
             self.treeview.insert('', 'end', values=product)
 
     def run(self):
