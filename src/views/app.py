@@ -1,5 +1,3 @@
-# app.py
-
 import tkinter as tk
 from tkinter import ttk
 from src.views.add_product import add_product_popup
@@ -9,9 +7,15 @@ from src.utils.event_manager import EventManager, PRODUCT_ADDED, PRODUCT_DELETED
 from src.services.product_service import ProductService
 from src.controllers.product_controller import ProductController
 
-
 class App(Singleton):
+    """Singleton class representing the main application for Inventory Management System."""
+
     def __init__(self):
+        """
+        Initializes the App instance.
+
+        Sets up the Tkinter root window, event manager, product service, and GUI components.
+        """
         super().__init__()
         
         self.root = tk.Tk()
@@ -32,7 +36,11 @@ class App(Singleton):
         self.product_controller.load_products()
 
     def setup_basic_gui(self):
-        # Set the window's size and other initial GUI setup here, up until before adding product-related widgets
+        """
+        Sets up the basic GUI components of the application.
+
+        This includes the main window, the treeview for displaying products, and the left frame with scrollbar.
+        """
         window_width = 800
         window_height = 600
         center_window(self.root, window_width, window_height)
@@ -53,7 +61,11 @@ class App(Singleton):
         scrollbar.pack(side="right", fill="y")
 
     def setup_product_related_gui(self):
-        # Continue the GUI setup that involves product-related widgets and actions
+        """
+        Sets up the GUI components related to product management.
+
+        This includes buttons for adding and removing products, and any other product-related GUI components.
+        """
         right_frame = ttk.Frame(self.root)
         right_frame.pack(side="right", fill="y")
 
@@ -67,5 +79,5 @@ class App(Singleton):
 
 
     def run(self):
-        # Run the main event loop
+        """Runs the main event loop of the application."""
         self.root.mainloop()

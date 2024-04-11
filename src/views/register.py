@@ -4,10 +4,23 @@ from src.utils.utils import center_window
 from src.services.authentication_service import register_user
 
 def back_to_login(popup, root):
+    """
+    Close the registration popup and reopen the login window.
+
+    Args:
+        popup (tk.Toplevel): The registration popup window to close.
+        root (tk.Tk): The root window (login window) to reopen.
+    """
     popup.destroy()  # Close the registration popup
     root.deiconify()  # Re-open the login window
 
 def show_registration_popup(root):
+    """
+    Display the registration popup window.
+
+    Args:
+        root (tk.Tk): The root window (login window).
+    """
     # Close the login window before showing the registration popup
     root.withdraw()
 
@@ -62,6 +75,12 @@ def show_registration_popup(root):
     
     # Handle registering user
     def attempt_register():
+        """
+        Attempt to register the user with the provided credentials.
+
+        This function extracts user input from the entry fields, attempts to register the user using the
+        register_user function from the authentication_service, and handles any errors or success messages.
+        """
         # Extract user input
         username = username_entry.get()
         email = email_entry.get()

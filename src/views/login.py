@@ -5,6 +5,12 @@ from src.services.authentication_service import login
 from src.views.register import show_registration_popup
 
 def main():
+    """
+    Main function to create and run the login GUI.
+
+    This function initializes the Tkinter root window, sets up the login form with username and password fields,
+    and includes buttons for login and registration. It configures the styling of buttons and centers the window on the screen.
+    """
     root = tk.Tk()
     root.title("Login")
     width = 300
