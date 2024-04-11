@@ -1,4 +1,4 @@
-from src.gui.app import App
+from src.views.app import App
 from src.repositories.user_repository import create_user, validate_user
 from tkinter import messagebox
 
@@ -33,7 +33,6 @@ def login(root, username_entry, password_entry):
     user = validate_user(username, password)
 
     if user:
-        messagebox.showinfo("Login Successful", f"Welcome, {username}!")
         # Close the login window
         root.destroy()
         # Run main app

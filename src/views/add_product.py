@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk
 from src.utils.utils import center_window
 from src.utils.event_manager import PRODUCT_ADDED
 from src.services.product_service import ProductService
+from src.models.product import Product
 
 def add_product_popup(root, event_manager):
     popup = tk.Toplevel(root)
@@ -39,17 +40,23 @@ def add_product_popup(root, event_manager):
         # Get product details from the entry fields
         name = name_entry.get()
         description = description_entry.get()
+
         try:
             price = float(price_entry.get())
             quantity = int(quantity_entry.get())
         except ValueError:
-            messagebox.showerror("Input Error", "Please ensure price and quantity are valid numbers.")
+            messagebox.showerror("Input Error", "Please ensure price and quantity are valid numbers.", parent=popup)
             return
 
+
         # Use the instance to add a product
-        product_service.add_product(name, description, price, quantity)
-        messagebox.showinfo("Success", "Product added successfully.")
-        popup.destroy()  # Close the popup
+        product = Product(name, description, price, quantity)
+        isCreated, error_message = product_service.add_product(product)
+        if isCreated:
+            messagebox.showinfo("Success", "Product added successfully.", parent=popup)
+            popup.destroy()
+        else:
+            messagebox.showerror("Error", error_message, parent=popup)
 
     # Create the "Add Product" button
     add_product_button = tk.Button(popup, text="Add Product", command=add_product)

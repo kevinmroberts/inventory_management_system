@@ -1,54 +1,66 @@
 # product_repository.py
 from src.repositories.repository_base import RepositoryBase
+from src.models.product import Product
 
 class ProductRepository(RepositoryBase):
 
     @staticmethod
-    def create_product(name, description, price, quantity_in_stock):
-        """Insert a new product into the database."""
+    def create_product(product):
+        """Insert a new product into the database using the Product model."""
         with RepositoryBase.get_db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
                 "INSERT INTO Product (name, description, price, quantity_in_stock) VALUES (?, ?, ?, ?)",
-                (name, description, price, quantity_in_stock)
+                (product.name, product.description, product.price, product.quantity_in_stock)
             )
             conn.commit()
+            return cursor.lastrowid
+
+    @staticmethod
+    def get_product_by_id(product_id):
+        """Retrieves a product by id."""
+        with RepositoryBase.get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM Product WHERE id = ?", (product_id,))
+            row = cursor.fetchone()
+            if row:
+                return Product(id=row[0], name=row[1], description=row[2], price=row[3], quantity_in_stock=row[4])
+            return None
+
 
     @staticmethod
     def read_products():
         """Fetch all products from the database."""
         with RepositoryBase.get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT id, name, description, price, quantity_in_stock FROM Product")
-            return cursor.fetchall()
+            cursor.execute("SELECT * FROM Product")
+            products = [Product(id=row[0], name=row[1], description=row[2], price=row[3], quantity_in_stock=row[4]) for row in cursor.fetchall()]
+            return products
 
     @staticmethod
-    def update_product(product_id, name=None, description=None, price=None, quantity_in_stock=None):
-        """Update a product's details in the database."""
+    def update_product(product):
+        """Update a product's details in the database using a Product model."""
         with RepositoryBase.get_db_connection() as conn:
             cursor = conn.cursor()
-            update_values = []
-            if name:
-                update_values.append(("name", name))
-            if description:
-                update_values.append(("description", description))
-            if price:
-                update_values.append(("price", price))
-            if quantity_in_stock:
-                update_values.append(("quantity_in_stock", quantity_in_stock))
-
-            set_clause = ", ".join([f"{field} = ?" for field, _ in update_values])
-
-            cursor.execute(
-                f"UPDATE Product SET {set_clause} WHERE id = ?",
-                [value for _, value in update_values] + [product_id]
-            )
+            
+            # Prepare the SQL statement with placeholders for values to be updated
+            sql = """
+            UPDATE Product
+            SET name = ?, description = ?, price = ?, quantity_in_stock = ?
+            WHERE id = ?
+            """
+            
+            # Prepare the values to update based on the product model
+            values = (product.name, product.description, product.price, product.quantity_in_stock, product.id)
+            
+            # Execute the update statement with the provided values
+            cursor.execute(sql, values)
             conn.commit()
 
     @staticmethod
-    def delete_product(product_id):
-        """Delete a product from the database."""
+    def delete_product(product):
+        """Delete a product from the database using a Product model."""
         with RepositoryBase.get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM Product WHERE id = ?", (product_id,))
+            cursor.execute("DELETE FROM Product WHERE id = ?", (product.id,))
             conn.commit()

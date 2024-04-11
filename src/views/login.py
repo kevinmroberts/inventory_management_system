@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from src.utils.utils import center_window
 from src.services.authentication_service import login
-from src.gui.register import show_registration_popup
+from src.views.register import show_registration_popup
 
 def main():
     root = tk.Tk()
