@@ -1,7 +1,10 @@
-# Define event type constants
-# Product constants
+# Product event types
 PRODUCT_ADDED = 'product_added'
 PRODUCT_DELETED = 'product_deleted'
+
+# User event types
+USER_REGISTERED = 'user_registered'
+USER_LOGGED_IN = 'user_logged_in'
 
 class EventManager:
     def __init__(self):

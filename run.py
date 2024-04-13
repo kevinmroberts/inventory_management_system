@@ -1,6 +1,6 @@
 import os
 import sys
-from src.views.login import main as run_gui_login
+from src.views.login import Login
 
 def setup_environment():
     """
@@ -25,7 +25,8 @@ def main():
     setup_environment()
 
     # Run the GUI login script
-    run_gui_login()
+    login_gui = Login()
+    login_gui.run()
 
 if __name__ == "__main__":
     main()

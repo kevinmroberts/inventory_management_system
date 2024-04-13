@@ -1,39 +1,60 @@
-# repositories/user_repository.py
 from src.repositories.repository_base import RepositoryBase
+from src.models.user import User
 import hashlib
-from tkinter import messagebox
 
-def create_user(username, email, password):
-    # Connect to the database
-    conn = RepositoryBase.get_db_connection()
-    cursor = conn.cursor()
+class UserRepository:
+    def __init__(self):
+        pass
 
-    # Check if the username already exists
-    cursor.execute("SELECT * FROM User WHERE username=?", (username,))
-    existing_user = cursor.fetchone()
+    @staticmethod
+    def fetch_user(user: User):
+        with RepositoryBase.get_db_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM User WHERE username=?", (user.username,))
+                row = cursor.fetchone()  # Use fetchone to get the first row of the results
+                if row:
+                    # Assuming row contains the fields in the correct order: id, username, password, role, email
+                    return User(id=row[0], username=row[1], password=row[2], role=row[3], email=row[4])
+            except Exception as e:
+                print(f"Error fetching user in repository layer: {e}")
+                return None
 
-    if existing_user:
-        messagebox.showerror("Registration Failed", "Username already exists. Please choose a different username.")
-        return False
-    else:
-        # Insert the new user into the database
-        cursor.execute("INSERT INTO User (username, email, password_hash) VALUES (?, ?, ?)",
-                       (username, email, hashlib.sha256(password.encode()).hexdigest()))
-        conn.commit()
-        messagebox.showinfo("Registration Successful", "User registered successfully.")
-        return True
     
-    # Close db connection
-    conn.close()
+    @staticmethod
+    def fetch_users():
+        with RepositoryBase.get_db_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM User")
+                return [User(id=row[0], username=row[1], password=row[2], role=row[3], email=row[4]) for row in cursor.fetchall()]
+            except Exception as e:
+                print(f"Error fetching users in repository layer: {e}")
 
-def validate_user(username, password):
-    # Connect to the database
-    conn = RepositoryBase.get_db_connection()
-    cursor = conn.cursor()
+    @staticmethod
+    def delete_user(user):
+        with RepositoryBase.get_db_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM User WHERE id = ?", (user.id,))
+                conn.commit()
+            except Exception as e:
+                print(f"Error deleting user in repository layer: {e}")
 
-    # Check if the username and password are valid
-    cursor.execute("SELECT * FROM User WHERE username=? AND password_hash=?", (username, hashlib.sha256(password.encode()).hexdigest()))
-    user = cursor.fetchone()
-    conn.close()
+    @staticmethod
+    def update_user(user):
+        with RepositoryBase.get_db_connection() as conn:
+            try:
+                cursor = conn.cursor()
+                sql = """
+                UPDATE User
+                SET username = ?, password_hash = ?, role = ?, email = ?
+                WHERE id = ?
+                """
+                cursor.execute(sql, (user.username, user.password_hash, user.role, user.email, user.id))
+                conn.commit()
+            except Exception as e:
+                print(f"Error updating user in repository layer: {e}")
 
-    return user
+
+

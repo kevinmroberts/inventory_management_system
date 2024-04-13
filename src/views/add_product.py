@@ -5,6 +5,8 @@ from src.utils.event_manager import PRODUCT_ADDED
 from src.services.product_service import ProductService
 from src.models.product import Product
 
+# TODO: Make the product popup a singleton, so that you can not open multiple windows of the add product pop up.
+
 def add_product_popup(root, event_manager):
     """
     Creates and displays a popup window for adding a new product.
