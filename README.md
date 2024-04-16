@@ -6,8 +6,8 @@ This Inventory Management System is designed to help businesses manage their inv
 ## Features
    ### Product Features:
    - **Add Products**: Easily add new products to the inventory, including details such as name, description, price, and quantity. (Available)
-   - **View Products**: View a list of all products in the inventory in a structured table. ( Available)
-   - **Update Products**: Modify the details of existing products in the inventory. (Work in Progress)
+   - **View Products**: View a list of all products in the inventory in a structured table. (Available)
+   - **Update Products**: Modify the details of existing products in the inventory. (Available)
    - **Delete Products**: Remove products from the inventory. (Available)
 
 ## Getting Started
