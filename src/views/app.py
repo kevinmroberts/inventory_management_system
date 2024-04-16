@@ -4,7 +4,7 @@ from src.views.add_product import add_product_popup
 from src.views.update_product import update_product_popup
 from src.utils.utils import center_window
 from src.utils.singleton import Singleton
-from src.utils.event_manager import EventManager
+from src.utils.event_manager import EventManager, USER_LOGGED_IN
 from src.services.product_service import ProductService
 from src.controllers.product_controller import ProductController
 
@@ -24,11 +24,9 @@ class App(Singleton):
             self.product_service = ProductService(self.event_manager)
             self.setup_basic_gui()
             self.product_controller = ProductController(self.root, self.event_manager, self.product_service, self.treeview)
-            
-
             self.setup_product_related_gui()
-
             self.initialized = True
+            self.root.after(100, self.publish_user_logged_in)
 
     def setup_basic_gui(self):
         """
@@ -77,6 +75,10 @@ class App(Singleton):
 
         remove_product_button = ttk.Button(right_frame, text="Remove Product", command=self.product_controller.on_delete_product_button_click)
         remove_product_button.pack(pady=10)
+
+    def publish_user_logged_in(self):
+        # This method should be called after all GUI components are ready.
+        self.event_manager.publish(USER_LOGGED_IN)
 
 
     def run(self):

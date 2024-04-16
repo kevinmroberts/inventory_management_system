@@ -4,6 +4,7 @@ from src.repositories.user_repository import UserRepository
 from src.models.user import User
 from tkinter import messagebox
 from src.utils.password_utils import hash_password
+from src.utils.event_manager import USER_LOGGED_IN
 
 REQUIRED_USERNAME_LENGTH = 4
 REQUIRED_PASSWORD_LENGTH = 4
@@ -40,8 +41,12 @@ class AuthenticationService:
         if isValid:
             # Optionally, withdraw/hide the login window instead of destroying it to keep the Tkinter loop alive
             root.withdraw()
+
             # Ensure singleton instance does not recreate the Tk window
             main_app_instance = App()
+
+            # Make sure the main application window is visible before publishing the event
             main_app_instance.root.deiconify()
+            main_app_instance.root.update()  # This ensures that all pending operations are processed
         else:
             messagebox.showerror("Login Failed", error_message)

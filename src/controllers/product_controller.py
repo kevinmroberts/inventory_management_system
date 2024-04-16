@@ -1,4 +1,4 @@
-from src.utils.event_manager import PRODUCT_ADDED, PRODUCT_DELETED, PRODUCT_UPDATED
+from src.utils.event_manager import PRODUCT_ADDED, PRODUCT_DELETED, PRODUCT_UPDATED, USER_LOGGED_IN
 from tkinter import messagebox
 
 class ProductController:
@@ -34,6 +34,9 @@ class ProductController:
         self.event_manager.subscribe(PRODUCT_ADDED, self.load_products)
         self.event_manager.subscribe(PRODUCT_DELETED, self.load_products)
         self.event_manager.subscribe(PRODUCT_UPDATED, self.load_products)
+
+        # Subscribe to user related events
+        self.event_manager.subscribe(USER_LOGGED_IN, self.load_products)
 
     def load_products(self, _=None):
         """
