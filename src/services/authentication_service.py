@@ -37,12 +37,11 @@ class AuthenticationService:
 
     def login(self, root, user: User):
         isValid, error_message = AuthenticationRepository.validate_user(user)
-
         if isValid:
-            # Close the login window
-            root.destroy()
-            # Run main app
+            # Optionally, withdraw/hide the login window instead of destroying it to keep the Tkinter loop alive
+            root.withdraw()
+            # Ensure singleton instance does not recreate the Tk window
             main_app_instance = App()
-            main_app_instance.run()
+            main_app_instance.root.deiconify()
         else:
             messagebox.showerror("Login Failed", error_message)

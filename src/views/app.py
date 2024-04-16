@@ -16,24 +16,18 @@ class App(Singleton):
 
         Sets up the Tkinter root window, event manager, product service, and GUI components.
         """
-        super().__init__()
-        
-        self.root = tk.Tk()
-        self.root.title("Inventory Management System")
-        self.event_manager = EventManager()
-        self.product_service = ProductService(self.event_manager)
-        
-        # Initialize GUI components first without the parts that depend on product_controller
-        self.setup_basic_gui()
+        if not hasattr(self, 'initialized') or not self.initialized:
+            self.root = tk.Tk()
+            self.root.title("Inventory Management System")
+            self.event_manager = EventManager()
+            self.product_service = ProductService(self.event_manager)
+            self.setup_basic_gui()
+            self.product_controller = ProductController(self.root, self.event_manager, self.product_service, self.treeview)
+            
 
-        # Initialize ProductController here, before calling the parts of setup_gui that use it
-        self.product_controller = ProductController(self.root, self.event_manager, self.product_service, self.treeview)
+            self.setup_product_related_gui()
 
-        # Now that product_controller is set up, complete the rest of the GUI setup
-        self.setup_product_related_gui()
-
-        # Load products into the treeview
-        self.product_controller.load_products()
+            self.initialized = True
 
     def setup_basic_gui(self):
         """
