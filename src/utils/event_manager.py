@@ -1,6 +1,7 @@
 # Product event types
 PRODUCT_ADDED = 'product_added'
 PRODUCT_DELETED = 'product_deleted'
+PRODUCT_UPDATED = "product_updated"
 
 # User event types
 USER_REGISTERED = 'user_registered'

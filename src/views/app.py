@@ -1,9 +1,10 @@
 import tkinter as tk
 from tkinter import ttk
 from src.views.add_product import add_product_popup
+from src.views.update_product import update_product_popup
 from src.utils.utils import center_window
 from src.utils.singleton import Singleton
-from src.utils.event_manager import EventManager, PRODUCT_ADDED, PRODUCT_DELETED
+from src.utils.event_manager import EventManager
 from src.services.product_service import ProductService
 from src.controllers.product_controller import ProductController
 
@@ -58,7 +59,7 @@ class App(Singleton):
         """
         Sets up the GUI components related to product management.
 
-        This includes buttons for adding and removing products, and any other product-related GUI components.
+        This includes buttons for adding, updating and removing products, and any other product-related GUI components.
         """
         right_frame = ttk.Frame(self.root)
         right_frame.pack(side="right", fill="y")
@@ -66,10 +67,16 @@ class App(Singleton):
         add_product_button = ttk.Button(right_frame, text="Add Product", command=lambda: add_product_popup(self.root, self.event_manager))
         add_product_button.pack(pady=10)
 
+        update_product_button = ttk.Button(
+            right_frame, text="Update Product", 
+            command=lambda: update_product_popup(
+                self.root, self.event_manager, self.product_controller.get_selected_product()  # This should call the method, not just reference it
+            )
+        )
+        update_product_button.pack(pady=10)
+
         remove_product_button = ttk.Button(right_frame, text="Remove Product", command=self.product_controller.on_delete_product_button_click)
         remove_product_button.pack(pady=10)
-
-        # Add any other product-related GUI components here
 
 
     def run(self):

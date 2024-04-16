@@ -1,5 +1,5 @@
 from src.repositories.product_repository import ProductRepository
-from src.utils.event_manager import PRODUCT_ADDED, PRODUCT_DELETED
+from src.utils.event_manager import PRODUCT_ADDED, PRODUCT_DELETED, PRODUCT_UPDATED
 from src.validators.product_validator import ProductValidator
 
 class ProductService:
@@ -56,6 +56,20 @@ class ProductService:
         except Exception as e:
             print(f"Error adding product: {e}")
             return False, "Error adding product."
+        
+    def update_product(self, product):
+        is_valid, error_message = ProductValidator.validate(product)
+        if not is_valid:
+            print(f"Validation error: {error_message}")
+            return False, error_message
+        
+        try:
+            ProductRepository.update_product(product)
+            self.event_manager.publish(PRODUCT_UPDATED)
+            return True, ""
+        except Exception as e:
+            print(f"Error updating product: {e}.")
+            return False, "Error updating product."
 
     def delete_product(self, product):
         """
@@ -85,4 +99,9 @@ class ProductService:
         Returns:
             The Product instance corresponding to the provided ID, or None if not found.
         """
-        return ProductRepository.get_product_by_id(product_id)
+        try:
+            product = ProductRepository.get_product_by_id(product_id)
+            return product  # Directly return the product or None
+        except Exception as e:
+            print(f"Error fetching product: {e}")
+            return None

@@ -1,4 +1,4 @@
-from src.utils.event_manager import PRODUCT_ADDED, PRODUCT_DELETED
+from src.utils.event_manager import PRODUCT_ADDED, PRODUCT_DELETED, PRODUCT_UPDATED
 from tkinter import messagebox
 
 class ProductController:
@@ -33,6 +33,7 @@ class ProductController:
         # Subscribe to product related events
         self.event_manager.subscribe(PRODUCT_ADDED, self.load_products)
         self.event_manager.subscribe(PRODUCT_DELETED, self.load_products)
+        self.event_manager.subscribe(PRODUCT_UPDATED, self.load_products)
 
     def load_products(self, _=None):
         """
@@ -76,3 +77,18 @@ class ProductController:
             item = self.treeview.item(selected_item)
             return item['values'][0]
         messagebox.showwarning("Selection Error", "Please select a product first.", parent=self.root)
+
+    def get_selected_product(self):
+        """
+        Retrieves the currently selected product in the TreeView.
+        """
+        selected_items = self.treeview.selection()
+        if selected_items:
+            selected_item = selected_items[0]
+            item = self.treeview.item(selected_item)
+            product_id = item['values'][0]  # assuming the ID is the first element in the tuple
+            return self.product_service.get_product_by_id(product_id)
+        else:
+            messagebox.showwarning("Selection Error", "Please select a product first.", parent=self.root)
+            return None
+

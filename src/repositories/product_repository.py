@@ -63,7 +63,7 @@ class ProductRepository(RepositoryBase):
             return [Product(id=row[0], name=row[1], description=row[2], price=row[3], quantity_in_stock=row[4]) for row in cursor.fetchall()]
 
     @staticmethod
-    def update_product(product):
+    def update_product(product: Product):
         """
         Updates a product's details in the database.
 
@@ -78,7 +78,13 @@ class ProductRepository(RepositoryBase):
             WHERE id = ?
             """
             cursor.execute(sql, (product.name, product.description, product.price, product.quantity_in_stock, product.id))
+            print(f"Updating product with ID {product.id} and details: {product.name}, {product.description}, {product.price}, {product.quantity_in_stock}")
             conn.commit()
+            affected_rows = cursor.rowcount
+            print(f"Number of rows updated: {affected_rows}")
+            if affected_rows == 0:
+                print("No rows updated, check the product ID and data.")
+
 
     @staticmethod
     def delete_product(product):
