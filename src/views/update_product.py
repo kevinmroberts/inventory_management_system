@@ -84,5 +84,3 @@ def update_product_popup(root, event_manager, product: Product):
 
     update_product_button = tk.Button(popup, text="Update Product", command=update_product)
     update_product_button.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
-
-    popup.mainloop()

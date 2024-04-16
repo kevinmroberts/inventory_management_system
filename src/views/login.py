@@ -54,7 +54,6 @@ class Login(Singleton):
         # Create a User object or pass these directly to your authentication service
         user = User(username=username, password=password, email="")  # Assuming email is optional or to be fetched elsewhere
 
-        # TODO: Figure out why after logging in, the main app window popup twice.
         # Logins the user using Authentication Server
         self.authentication_service.login(self.root, user)
 

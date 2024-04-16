@@ -77,5 +77,3 @@ def add_product_popup(root, event_manager):
 
     add_product_button = tk.Button(popup, text="Add Product", command=add_product)
     add_product_button.grid(row=4, column=0, columnspan=2, padx=5, pady=5)
-
-    popup.mainloop()

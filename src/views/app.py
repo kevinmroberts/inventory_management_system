@@ -7,6 +7,8 @@ from src.utils.singleton import Singleton
 from src.utils.event_manager import EventManager, USER_LOGGED_IN
 from src.services.product_service import ProductService
 from src.controllers.product_controller import ProductController
+from tkinter import messagebox
+import threading
 
 class App(Singleton):
     """Singleton class representing the main application for Inventory Management System."""
@@ -25,6 +27,7 @@ class App(Singleton):
             self.setup_basic_gui()
             self.product_controller = ProductController(self.root, self.event_manager, self.product_service, self.treeview)
             self.setup_product_related_gui()
+            self.root.protocol("WM_DELETE_WINDOW", self.on_close)
             self.initialized = True
             self.root.after(100, self.publish_user_logged_in)
 
@@ -80,7 +83,30 @@ class App(Singleton):
         # This method should be called after all GUI components are ready.
         self.event_manager.publish(USER_LOGGED_IN)
 
+    def on_close(self):
+        if messagebox.askokcancel("Quit", "Do you want to exit the application?"):
+            print("Closing application...")
+            self.list_active_threads()
+            self.root.destroy()  # Properly destroy the window
+            print("Application closed.")  # Confirm closure in terminal
+            import sys
+            sys.exit(0)
+        else:
+            print("Close canceled by user.")
 
     def run(self):
-        """Runs the main event loop of the application."""
-        self.root.mainloop()
+        """Runs a more controlled main event loop for the application."""
+        while True:
+            try:
+                self.root.update_idletasks()
+                self.root.update()
+            except tk.TclError as e:
+                print(f"Tkinter error: {e}")
+                break  # Exit the loop if the window is closed
+            except KeyboardInterrupt:
+                print("Detected KeyboardInterrupt, shutting down...")
+                break
+
+    def list_active_threads(self):
+        for thread in threading.enumerate():
+            print(thread.name, thread.is_alive())
